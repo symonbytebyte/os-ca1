@@ -157,7 +157,7 @@ cgaputc(int c)
     END--;
     pos--;
   }else if(c == LEFT_ARROW){
-    if(pos > FIRST + 1) --pos;
+    if(pos > FIRST + 2) --pos;
   }else if(c == RIGHT_ARROW){
     if(pos < END) ++pos;
   }else{
@@ -177,6 +177,8 @@ cgaputc(int c)
   if((pos/80) >= 24){  // Scroll up.
     memmove(crt, crt+80, sizeof(crt[0])*23*80);
     pos -= 80;
+    END -= 80;
+    FIRST -= 80;
     memset(crt+pos, 0, sizeof(crt[0])*(24*80 - pos));
   }
 
@@ -250,7 +252,7 @@ consoleintr(int (*getc)(void))
       if(c != 0 && input.e-input.r < INPUT_BUF){
         c = (c == '\r') ? '\n' : c;
         if(c == LEFT_ARROW){
-          offset--;
+          if(input.e > input.w) offset--;
         }else if(c == RIGHT_ARROW){
           if(offset < 0) offset++;
         }else{
